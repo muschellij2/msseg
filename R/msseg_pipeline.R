@@ -11,7 +11,7 @@
 #' @param verbose print diagnostic messages
 #' @return Final Segmentation
 #' @export
-#' @importFrom randomForest predict combine
+#' @importFrom randomForest combine
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
   t1_post = "3DT1GADO.nii.gz",
