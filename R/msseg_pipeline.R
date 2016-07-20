@@ -11,6 +11,7 @@
 #' @param verbose print diagnostic messages
 #' @return Final Segmentation
 #' @export
+#' @importFrom randomForest predict combine
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
   t1_post = "3DT1GADO.nii.gz",
@@ -54,10 +55,22 @@ msseg_pipeline =  function(
   ind = df$qFLAIR > 0.5
 
   p = rep(0, length = nrow(df))
+
+  rf = randomForest::combine(msseg::rf_model_1,
+               msseg::rf_model_2,
+               msseg::rf_model_3,
+               msseg::rf_model_4,
+               msseg::rf_model_5,
+               msseg::rf_model_6,
+               msseg::rf_model_7,
+               msseg::rf_model_8,
+               msseg::rf_model_9,
+               msseg::rf_model_10)
+
   ##################################
   # Predict from the model
   ##################################
-  p[ind] = predict(msseg::rf_model,
+  p[ind] = predict(rf,
                    newdata = df[ind,],
                    type = "prob")[, "1"]
   pimg = remake_img(p, img = mask, mask = mask)

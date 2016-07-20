@@ -16,6 +16,7 @@ Imports:
     matrixStats,
     plyr,
     ANTsR,
-    drammsr
+    drammsr,
+    randomForest
 LazyData: TRUE
 RoxygenNote: 5.0.1.9000
