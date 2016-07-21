@@ -6,6 +6,8 @@ Author: John Muschelli <muschellij2@gmail.com>
 Maintainer: John Muschelli <muschellij2@gmail.com>
 Description: Segments lesions from images of patients with multiple sclerosis.
 License: GPL-2
+Depends:
+    R (>= 2.10)
 Imports:
     methods,
     fslr,

@@ -5,6 +5,7 @@
 #' @param y_fname Name of gold standard
 #'
 #' @return List of mask and data.frame
+#' @importFrom stats model.matrix
 #' @export
 make_df = function(fnames, mask, y_fname = NULL) {
     mask = check_nifti(mask)

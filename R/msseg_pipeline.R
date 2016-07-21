@@ -12,6 +12,7 @@
 #' @return Final Segmentation
 #' @export
 #' @importFrom randomForest combine
+#' @importFrom stats predict model.matrix
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
   t1_post = "3DT1GADO.nii.gz",
