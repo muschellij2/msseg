@@ -6,7 +6,7 @@
 \usage{
 malf_tissue_seg(t1, outfile = NULL, num_templates = 15,
   interpolator = "NearestNeighbor", typeofTransform = "SyN",
-  func = "mode", verbose = TRUE)
+  func = "mode", keep_regs = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{t1}{T1-weighted image/filename}
@@ -20,6 +20,9 @@ malf_tissue_seg(t1, outfile = NULL, num_templates = 15,
 \item{typeofTransform}{Transformation to align the templates to the T1}
 
 \item{func}{Function used to vote}
+
+\item{keep_regs}{Keep registrations (for future use),
+passed to \code{\link{malf}}}
 
 \item{verbose}{Print diagnostic messages}
 }
