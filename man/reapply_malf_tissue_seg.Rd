@@ -28,9 +28,6 @@ Length must match \code{num_templates}.}
 \item{verbose}{Print diagnostic messages}
 
 \item{...}{additional options to pass to \code{reapply_malf}}
-
-\item{keep_regs}{Keep registrations (for future use),
-passed to \code{\link{malf}}}
 }
 \value{
 Object of class nifti

@@ -11,8 +11,6 @@
 #' @param interpolator Interpolation used
 #' @param typeofTransform Transformation to align the templates to the T1
 #' @param func Function used to vote
-#' @param keep_regs Keep registrations (for future use),
-#' passed to \code{\link{malf}}
 #' @param verbose Print diagnostic messages
 #' @param ... additional options to pass to \code{reapply_malf}
 #'
@@ -20,6 +18,7 @@
 #' @export
 #' @importFrom extrantsr malf
 #' @importFrom fslr check_outfile
+#' @importFrom extrantsr reapply_malf
 reapply_malf_tissue_seg = function(t1,
                                    regs,
                                    outfile = NULL,
