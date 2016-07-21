@@ -14,7 +14,7 @@ Imports:
     oro.nifti,
     animation,
     ROCR,
-    extrantsr,
+    extrantsr (>= 1.2.2.1),
     matrixStats,
     plyr,
     ANTsR,
