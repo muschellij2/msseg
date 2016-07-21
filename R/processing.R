@@ -480,7 +480,7 @@ process_images = function(t1_pre,
                      "T1_Pre_MALF_Tissue_Classes_Gauss.nii.gz")
   every_fname = c(every_fname, fnames)
 
-  if (!inherits(tissue_seg_reg, "nifti")) {
+  if (inherits(tissue_seg_reg, "nifti") || force) {
     regs = list(fwdtransforms = tempfile())
   } else {
     regs = tissue_seg_reg$regs
@@ -489,7 +489,7 @@ process_images = function(t1_pre,
   #########################################
   # Saves computation by not having to redo registrations
   #########################################
-  if (all_exists(trans) & !force) {
+  if (all_exists(trans) && !force) {
     tissue_seg_gauss = reapply_malf_tissue_seg(
       t1 = masked_reg_imgs$T1_Pre,
       regs = regs,
