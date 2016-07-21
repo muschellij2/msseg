@@ -835,6 +835,30 @@ process_images = function(t1_pre,
     fnames[other.names])
   }
 
+  # ################################
+  # Register to T1
+  # DRAMMS with Eve Template
+  # ################################
+  if (verbose > 0) {
+    message("DRAMMS Eve to T1")
+  }
+  t1_inv_deffile = paste0(
+    nii.stub(t1_outfile),
+    "_inv_def.nii.gz")
+  template_to_pre = file.path(
+    dirname(t1_outfile),
+    "Eve_to_T1.nii.gz"
+  )
+  if (!all_exists(c(t1_inv_deffile,
+                    template_to_pre))) {
+    d = dramms(
+      source = template_brain,
+      target = t1,
+      outfile = template_to_pre,
+      outdef = t1_inv_deffile
+    )
+  }
+
   if (verbose > 0) {
     message("Inverting DRAMMS Z-score to Eve")
   }
