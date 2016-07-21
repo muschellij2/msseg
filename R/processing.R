@@ -466,7 +466,7 @@ process_images = function(t1_pre,
     func = "mode",
     keep_regs = TRUE,
     verbose = TRUE)
-  tissue_seg = tissue_seg_reg$outimg
+  # tissue_seg = tissue_seg_reg$outimg
 
   if (verbose > 0) {
     message("Running Tissue Segmentation MALF on T1 Pre with Gauss")
@@ -478,8 +478,11 @@ process_images = function(t1_pre,
                      "T1_Pre_MALF_Tissue_Classes_Gauss.nii.gz")
   every_fname = c(every_fname, fnames)
 
-  regs = tissue_seg_reg$regs
-  trans = unlist(regs$fwdtransforms)
+  if (is.nifti(tissue_seg_reg)) {
+    regs = list(fwdtransforms = tempfile())
+  } else {
+    regs = tissue_seg_reg$regs
+  }
   #########################################
   # Saves computation by not having to redo registrations
   #########################################
