@@ -483,6 +483,7 @@ process_images = function(t1_pre,
   } else {
     regs = tissue_seg_reg$regs
   }
+  trans = regs$fwdtransforms
   #########################################
   # Saves computation by not having to redo registrations
   #########################################
