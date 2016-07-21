@@ -7,6 +7,7 @@
 #' @param pd Proton Density pre-gad image/filename
 #' @param gold_standard Gold Standar Lesion
 #' @param outdir Output directory
+#' @param outfile Output file for segmentation
 #' @param num_templates Number of templates used in MASS
 #' @param verbose print diagnostic messages
 #' @return Final Segmentation
@@ -21,6 +22,7 @@ msseg_pipeline =  function(
   pd = "DP.nii.gz",
   gold_standard = NULL,
   outdir = ".",
+  outfile = NULL,
   num_templates = 15,
   verbose = TRUE){
 
@@ -79,6 +81,9 @@ msseg_pipeline =  function(
 
   yhat = unstrip_image(strip_image = yhat,
                        outdir = outdir)
+  if (!is.null(outfile)) {
+    writenii(yhat, filename = outfile)
+  }
   return(yhat)
 }
 
