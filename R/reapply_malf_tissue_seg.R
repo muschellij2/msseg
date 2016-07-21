@@ -1,7 +1,11 @@
-#' @title MALF tissue Segmentation
-#' @description Uses MALF for tissue-class segmentation
+#' @title MALF tissue Segmentation without Re-registration
+#' @description Uses MALF for tissue-class segmentation, but with already-done
+#' registrations
 #'
 #' @param t1 T1-weighted image/filename
+#' @param regs List of registrations from malf or malf_registration,
+#' each element must have fwdtransforms and interpolator.
+#' Length must match \code{num_templates}.
 #' @param outfile Output filename
 #' @param num_templates Number of templates to use for MALF
 #' @param interpolator Interpolation used
@@ -10,19 +14,21 @@
 #' @param keep_regs Keep registrations (for future use),
 #' passed to \code{\link{malf}}
 #' @param verbose Print diagnostic messages
+#' @param ... additional options to pass to \code{reapply_malf}
 #'
 #' @return Object of class nifti
 #' @export
 #' @importFrom extrantsr malf
 #' @importFrom fslr check_outfile
-malf_tissue_seg = function(t1,
-                           outfile = NULL,
-                           num_templates = 15,
-                           interpolator = "NearestNeighbor",
-                           typeofTransform = "SyN",
-                           func = "mode",
-                           keep_regs = TRUE,
-                           verbose = TRUE){
+reapply_malf_tissue_seg = function(t1,
+                                   regs,
+                                   outfile = NULL,
+                                   num_templates = 15,
+                                   interpolator = "NearestNeighbor",
+                                   typeofTransform = "SyN",
+                                   func = "mode",
+                                   verbose = TRUE,
+                                   ...){
 
   root_mass_template_dir = system.file("MASS_Templates",
                                        package = "msseg")
@@ -33,9 +39,6 @@ malf_tissue_seg = function(t1,
                              "WithCerebellum_noneck",
                              paste0("Template", 1:num_templates,
                                     ".nii.gz"))
-  # template_masks = sub("[.]nii",
-  #                      "_str_cbq.nii",
-  #                      template_files)
   template_structs = sub("[.]nii",
                          "_Tissue_Classes.nii",
                          template_files)
@@ -50,18 +53,18 @@ malf_tissue_seg = function(t1,
   if (all_exists(fnames)) {
     tissue_seg = readnii(fnames)
   } else {
-    tissue_seg = malf(
+    tissue_seg = reapply_malf(
       infile = t1,
-      keep_images = FALSE,
-      template.images = template_files,
+      regs = regs,
       template.structs = template_structs,
-      interpolator = interpolator,
-      typeofTransform = typeofTransform,
-      keep_regs = keep_regs,
+      keep_images = FALSE,
+      outfile = fnames,
+      retimg = TRUE,
       func = func,
-      verbose = verbose)
-    writenii(tissue_seg,
-             filename = fnames)
+      interpolator = interpolator,
+      verbose = verbose,
+      ...
+    )
   }
   return(tissue_seg)
 }

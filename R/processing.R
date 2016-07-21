@@ -457,13 +457,16 @@ process_images = function(t1_pre,
                      "T1_Pre_MALF_Tissue_Classes.nii.gz")
   every_fname = c(every_fname, fnames)
 
-  tissue_seg = malf_tissue_seg(t1 = masked_reg_imgs$T1_Pre,
-                               outfile = fnames,
-                               num_templates = num_templates,
-                               interpolator = "NearestNeighbor",
-                               typeofTransform = "SyN",
-                               func = "mode",
-                               verbose = TRUE)
+  tissue_seg_reg = malf_tissue_seg(
+    t1 = masked_reg_imgs$T1_Pre,
+    outfile = fnames,
+    num_templates = num_templates,
+    interpolator = "NearestNeighbor",
+    typeofTransform = "SyN",
+    func = "mode",
+    keep_regs = TRUE,
+    verbose = TRUE)
+  tissue_seg = tissue_seg_reg$outimg
 
   if (verbose > 0) {
     message("Running Tissue Segmentation MALF on T1 Pre with Gauss")
@@ -475,13 +478,31 @@ process_images = function(t1_pre,
                      "T1_Pre_MALF_Tissue_Classes_Gauss.nii.gz")
   every_fname = c(every_fname, fnames)
 
-  tissue_seg_gauss = malf_tissue_seg(t1 = masked_reg_imgs$T1_Pre,
-                                     outfile = fnames,
-                                     num_templates = num_templates,
-                                     interpolator = "MultiLabel",
-                                     typeofTransform = "SyN",
-                                     func = "mode",
-                                     verbose = TRUE)
+  regs = tissue_seg_reg$regs
+  trans = unlist(regs$fwdtransforms)
+  #########################################
+  # Saves computation by not having to redo registrations
+  #########################################
+  if (all_exists(trans)) {
+    tissue_seg_gauss = reapply_malf_tissue_seg(
+      t1 = masked_reg_imgs$T1_Pre,
+      regs = regs,
+      outfile = fnames,
+      num_templates = num_templates,
+      interpolator = "MultiLabel",
+      func = "mode",
+      verbose = TRUE)
+  } else {
+    tissue_seg_gauss = malf_tissue_seg(
+      t1 = masked_reg_imgs$T1_Pre,
+      outfile = fnames,
+      num_templates = num_templates,
+      interpolator = "MultiLabel",
+      typeofTransform = "SyN",
+      func = "mode",
+      keep_regs = FALSE,
+      verbose = TRUE)
+  }
   if (verbose > 0) {
     message("Running Atropos Tissue Segmentation on T1 Pre")
   }
@@ -1267,7 +1288,7 @@ process_images = function(t1_pre,
                 function(x) {
                   adder = 5
                   x = mask_img(x + adder,
-                    mask)
+                               mask)
                   r = extrantsr::diff_self(x)
                   mask_img(r, mask)
                 },
