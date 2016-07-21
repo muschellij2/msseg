@@ -5,7 +5,7 @@
 \title{Process Images for MSSeg}
 \usage{
 process_images(t1_pre, t1_post, flair, t2, pd, gold_standard = NULL,
-  outdir = ".", num_templates = 15, verbose = TRUE)
+  outdir = ".", num_templates = 15, verbose = TRUE, force = TRUE)
 }
 \arguments{
 \item{t1_pre}{T1-weighted pre-gad image/filename}
@@ -25,6 +25,8 @@ process_images(t1_pre, t1_post, flair, t2, pd, gold_standard = NULL,
 \item{num_templates}{Number of templates used in MASS}
 
 \item{verbose}{print diagnostic messages}
+
+\item{force}{Force tissue segmentations}
 }
 \value{
 List of output filenames

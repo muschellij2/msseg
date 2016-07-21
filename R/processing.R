@@ -9,6 +9,7 @@
 #' @param outdir Output directory
 #' @param num_templates Number of templates used in MASS
 #' @param verbose print diagnostic messages
+#' @param force Force tissue segmentations
 #' @return List of output filenames
 #' @export
 #' @importFrom plyr llply
@@ -26,7 +27,8 @@ process_images = function(t1_pre,
                           gold_standard = NULL,
                           outdir = ".",
                           num_templates = 15,
-                          verbose = TRUE){
+                          verbose = TRUE,
+                          force = TRUE){
   verbose = TRUE
 
   niis = list(FLAIR = flair,
@@ -478,7 +480,7 @@ process_images = function(t1_pre,
                      "T1_Pre_MALF_Tissue_Classes_Gauss.nii.gz")
   every_fname = c(every_fname, fnames)
 
-  if (is.nifti(tissue_seg_reg)) {
+  if (!inherits(tissue_seg_reg, "nifti")) {
     regs = list(fwdtransforms = tempfile())
   } else {
     regs = tissue_seg_reg$regs
@@ -487,7 +489,7 @@ process_images = function(t1_pre,
   #########################################
   # Saves computation by not having to redo registrations
   #########################################
-  if (all_exists(trans)) {
+  if (all_exists(trans) & !force) {
     tissue_seg_gauss = reapply_malf_tissue_seg(
       t1 = masked_reg_imgs$T1_Pre,
       regs = regs,
