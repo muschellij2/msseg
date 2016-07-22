@@ -10,10 +10,13 @@
 #' @param outfile Output file for segmentation
 #' @param num_templates Number of templates used in MASS
 #' @param verbose print diagnostic messages
+#' @param runcc Run connected components
+#' @param min_vol Minimum volume of a lesion
 #' @return Final Segmentation
 #' @export
 #' @importFrom randomForest combine
 #' @importFrom stats predict model.matrix
+#' @importFrom ANTsR antsImageRead labelClusters
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
   t1_post = "3DT1GADO.nii.gz",
@@ -24,7 +27,9 @@ msseg_pipeline =  function(
   outdir = ".",
   outfile = NULL,
   num_templates = 15,
-  verbose = TRUE){
+  verbose = TRUE,
+  runcc = TRUE,
+  min_vol = 0.01){
 
   process_images(t1_pre = t1_pre,
                  t1_post = t1_post,
@@ -83,6 +88,23 @@ msseg_pipeline =  function(
                        outdir = outdir)
   if (!is.null(outfile)) {
     writenii(yhat, filename = outfile)
+  }
+  if (runcc) {
+    vres = voxres(yhat, units = "cm")
+    aimg = antsImageRead(outfile)
+    labs = labelClusters(aimg,
+                         minClusterSize = 1,
+                         fullyConnected = TRUE)
+    min_vox = floor(min_vol / vres)
+    tab = table(c(as.array(labs)))
+    levs = names(tab[tab > min_vox])
+    levs = as.numeric(levs)
+    levs = levs[ levs > 0]
+    olabs = ants2oro(labs)
+    yhat = niftiarr(yhat, olabs %in% levs)
+    if (!is.null(outfile)) {
+      writenii(yhat, filename = outfile)
+    }
   }
   return(yhat)
 }
