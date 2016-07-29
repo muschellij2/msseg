@@ -4,7 +4,8 @@
 \alias{png_converter}
 \title{Convert set of PNGs to PDF}
 \usage{
-png_converter(pngs, pdfname, extra.opts = "-density 300")
+png_converter(pngs, pdfname, extra.opts = "-density 300", interval = 0,
+  autobrowse = FALSE)
 }
 \arguments{
 \item{pngs}{List of names (or with wildcards) of png files}
@@ -12,6 +13,10 @@ png_converter(pngs, pdfname, extra.opts = "-density 300")
 \item{pdfname}{Output PDF filename}
 
 \item{extra.opts}{Options passed to \code{\link{im.convert}}}
+
+\item{interval}{interval of delay, passed to \code{\link{ani.options}}}
+
+\item{autobrowse}{passed to \code{\link{ani.options}}}
 }
 \value{
 Name of PDF output file
