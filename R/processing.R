@@ -77,6 +77,7 @@ process_images = function(t1_pre,
     n4 = llply(imgs,
                bias_correct,
                correction = "N4",
+               verbose = verbose,
                .progress = "text")
 
     #################################
