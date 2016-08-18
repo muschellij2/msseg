@@ -12,6 +12,7 @@
 #' @param verbose print diagnostic messages
 #' @param runcc Run connected components
 #' @param min_vol Minimum volume of a lesion
+#' @param ... arguments passed to \code{\link{process_images}}
 #' @return Final Segmentation
 #' @export
 #' @importFrom randomForest combine
@@ -29,7 +30,8 @@ msseg_pipeline =  function(
   num_templates = 15,
   verbose = TRUE,
   runcc = TRUE,
-  min_vol = 0.01){
+  min_vol = 0.01,
+  ...){
 
   process_images(t1_pre = t1_pre,
                  t1_post = t1_post,
@@ -39,7 +41,7 @@ msseg_pipeline =  function(
                  gold_standard = gold_standard,
                  outdir = outdir,
                  num_templates = num_templates,
-                 verbose = verbose)
+                 verbose = verbose, ...)
   # rm(list = "proc_L")
   # L = list(mask = ret_mask_fname,
   #          gold_standard = les_out_fname,

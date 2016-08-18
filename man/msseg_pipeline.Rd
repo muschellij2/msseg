@@ -7,7 +7,7 @@
 msseg_pipeline(t1_pre = "3DT1.nii.gz", t1_post = "3DT1GADO.nii.gz",
   flair = "3DFLAIR.nii.gz", t2 = "T2.nii.gz", pd = "DP.nii.gz",
   gold_standard = NULL, outdir = ".", outfile = NULL,
-  num_templates = 15, verbose = TRUE, runcc = TRUE, min_vol = 0.01)
+  num_templates = 15, verbose = TRUE, runcc = TRUE, min_vol = 0.01, ...)
 }
 \arguments{
 \item{t1_pre}{T1-weighted pre-gad image/filename}
@@ -33,6 +33,8 @@ msseg_pipeline(t1_pre = "3DT1.nii.gz", t1_post = "3DT1GADO.nii.gz",
 \item{runcc}{Run connected components}
 
 \item{min_vol}{Minimum volume of a lesion}
+
+\item{...}{arguments passed to \code{\link{process_images}}}
 }
 \value{
 Final Segmentation
