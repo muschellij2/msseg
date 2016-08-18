@@ -60,8 +60,14 @@ malf_tissue_seg = function(t1,
       keep_regs = keep_regs,
       func = func,
       verbose = verbose)
-    writenii(tissue_seg,
+    if (keep_regs) {
+      oimg = tissue_seg$outimg
+      writenii(oimg,
+               filename = fnames)
+    } else {
+      writenii(tissue_seg,
              filename = fnames)
+    }
   }
   return(tissue_seg)
 }
