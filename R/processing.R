@@ -15,7 +15,7 @@
 #' @importFrom plyr llply
 #' @importFrom extrantsr oro2ants ants2oro double_remove_neck bias_correct
 #' @importFrom extrantsr oMath filler within_visit_registration reg_flip otropos
-#' @importFrom extrantsr corr_img diff_self
+#' @importFrom extrantsr corr_img diff_self create_moment
 #' @importFrom ANTsR getMask "%>%"
 #' @importFrom fslr dropEmptyImageDimensions fslbet quantile_img
 #' @importFrom fslr fslsmooth nii.stub remake_img

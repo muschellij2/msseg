@@ -1,7 +1,7 @@
 Package: msseg
 Type: Package
 Title: Segmentation of Lesions for Multiple Sclerosis
-Version: 0.1.7.1
+Version: 0.1.8.0
 Author: John Muscheli <muschellij2@gmail.com>
 Maintainer: John Muschelli <muschellij2@gmail.com>
 Description: Segments lesions from images of patients with multiple sclerosis.
@@ -14,7 +14,7 @@ Imports:
     oro.nifti,
     animation,
     ROCR,
-    extrantsr (>= 1.2.3.5),
+    extrantsr (>= 1.2.4.0),
     matrixStats,
     plyr,
     ANTsR,
