@@ -760,7 +760,7 @@ process_images = function(t1_pre,
   other.names = names(all_fnames)
   other.names = setdiff(other.names,
                         reg_name)
-  t1 = norm_imgs[[reg_name]]
+  t1 = masked_reg_imgs[[reg_name]]
 
   if (!all_exists(fnames)) {
     # t1 = masked_reg_imgs[[reg_name]]
@@ -769,7 +769,8 @@ process_images = function(t1_pre,
       template.file = template_brain,
       typeofTransform = "SyN",
       interpolator = "LanczosWindowedSinc",
-      outfile = fnames[reg_name],
+      # outfile = fnames[reg_name],
+      outfile = tempfile(fileext = ".nii.gz"),
       other.files =
         all_imgs[other.names],
       other.outfiles =
