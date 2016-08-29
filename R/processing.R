@@ -641,9 +641,9 @@ process_images = function(t1_pre,
 
 
   if (all_exists(c(fnames)))  {
-    qimgs = llply(fnames,
-                  readnii,
-                  .progress = "text")
+    # qimgs = llply(fnames,
+    #               readnii,
+    #               .progress = "text")
   } else {
     qimgs = llply(masked_reg_imgs,
                   quantile_img,
@@ -653,6 +653,7 @@ process_images = function(t1_pre,
       writenii(img, filename = fname)
     }, qimgs, fnames)
   }
+  qimgs = fnames
 
   ################################
   # Delete CSF from Mask
@@ -778,7 +779,7 @@ process_images = function(t1_pre,
       remove.warp = FALSE,
       outprefix = tempfile()
     )
-
+    rm(t1_reg); gc(); gc()
   }
 
   if (verbose > 0) {
@@ -914,7 +915,7 @@ process_images = function(t1_pre,
     template_ravens_pre,
     ".nii.gz")
   if (!all_exists(fnames)) {
-    t1 = norm_imgs[[reg_name]]
+    t1 = masked_reg_imgs[[reg_name]]
     d = dramms_with_ravens(
       source = template_brain,
       target = t1,
@@ -964,16 +965,17 @@ process_images = function(t1_pre,
   every_fname = c(every_fname, fnames)
 
   if (all_exists(fnames)) {
-    flip_imgs = llply(fnames,
-                      readnii,
-                      .progress = "text")
+    # flip_imgs = llply(fnames,
+    #                   readnii,
+    #                   .progress = "text")
+    flip_imgs = fnames
   } else {
 
     reg_name = "T1_Pre"
     other.names = names(fnames)
     other.names = setdiff(other.names,
                           reg_name)
-    t1 = norm_imgs[[reg_name]]
+    t1 = masked_reg_imgs[[reg_name]]
     t1_freg = reg_flip(
       t1 = t1,
       register = TRUE,
@@ -981,16 +983,17 @@ process_images = function(t1_pre,
       template.file = template_brain,
       typeofTransform = "Affine",
       interpolator = "LanczosWindowedSinc",
-      t1.outfile = fnames[reg_name],
+      # t1.outfile = fnames[reg_name],
+      t1.outfile = tempfile(fileext = ".nii.gz"),
       other.files =
-        all_imgs[other.names],
+        all_imgs,
       other.outfiles =
-        fnames[other.names],
+        fnames,
       a = "-x",
       b = "y",
       c = "z"
     )
-
+    rm(t1_freg); gc(); gc()
     flipped = llply(fnames,
                     readnii,
                     .progress = "text")
@@ -1015,9 +1018,10 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, flip_imgs, fnames)
+    rm(list = "flip_imgs"); gc();
   }
 
-
+  rm(list = "masked_reg_imgs"); gc(); gc();
 
   ##############################
   # Smooth Image with 3mm
@@ -1029,10 +1033,10 @@ process_images = function(t1_pre,
   sigma = 3
   sigmas = c(3, 10, 20)
 
-  tmp_list = all_imgs
-  tmp_list = lapply(tmp_list, function(x){
-    NULL
-  })
+  # tmp_list = all_imgs
+  # tmp_list = lapply(tmp_list, function(x){
+  #   NULL
+  # })
   sigma_list = vector(
     mode = "list",
     length = length(sigmas))
@@ -1046,9 +1050,9 @@ process_images = function(t1_pre,
     every_fname = c(every_fname, fnames)
 
     if (all_exists(fnames)){
-      sig_imgs = llply(fnames,
-                       readnii,
-                       .progress = "text")
+      # sig_imgs = llply(fnames,
+      #                  readnii,
+      #                  .progress = "text")
     } else {
       sig_imgs = llply(all_imgs,
                        fslsmooth,
@@ -1059,9 +1063,10 @@ process_images = function(t1_pre,
       mapply(function(img, fname){
         writenii(img, filename = fname)
       }, sig_imgs, fnames)
-
+      rm(list = "sig_imgs"); gc()
     }
-    sigma_list[[isigma]] = sig_imgs
+    sigma_list[[isigma]] = fnames
+    # sig_imgs
     print(sigma)
   }
 
@@ -1078,9 +1083,9 @@ process_images = function(t1_pre,
   every_fname = c(every_fname, fnames)
 
   if (all_exists(fnames)) {
-    pm_imgs = llply(fnames,
-                    readnii,
-                    .progress = "text")
+    # pm_imgs = llply(fnames,
+    #                 readnii,
+    #                 .progress = "text")
   } else {
 
     ##########################
@@ -1096,6 +1101,7 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, pm_imgs, fnames)
+    rm(list = "pm_imgs"); gc();
   }
 
 
@@ -1147,15 +1153,16 @@ process_images = function(t1_pre,
                      function(x){
                        x$mn
                      })
+  rm(list = "all_mom_imgs"); gc()
   fnames = paste0(nii.stub(norm_fnames),
                   "_mn_quantile.nii.gz")
   names(fnames) = img_names
   every_fname = c(every_fname, fnames)
 
   if (all_exists(c(fnames))) {
-    mn_qimgs = llply(fnames,
-                     readnii,
-                     .progress = "text")
+    # mn_qimgs = llply(fnames,
+    #                  readnii,
+    #                  .progress = "text")
   } else {
     mn_qimgs = llply(mean_imgs,
                      quantile_img,
@@ -1164,7 +1171,10 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, mn_qimgs, fnames)
+    rm(list = "mn_qimgs"); gc()
   }
+  mn_qimgs = fnames
+  rm(list = "mean_imgs"); gc();
 
   ###########################################
   # Creating Moment Images of
@@ -1195,9 +1205,9 @@ process_images = function(t1_pre,
     every_fname = c(every_fname, fnames)
 
     if (all_exists(fnames)){
-      prob_mom_imgs = llply(fnames,
-                            readnii,
-                            .progress = "text")
+      # prob_mom_imgs = llply(fnames,
+      #                       readnii,
+      #                       .progress = "text")
     } else {
       img = tissue_probs[[ifname]]
       prob_mom_imgs = create_moment(img,
@@ -1207,9 +1217,10 @@ process_images = function(t1_pre,
       mapply(function(img, fname){
         writenii(img, filename = fname)
       }, prob_mom_imgs, fnames)
+      rm(list = "prob_mom_imgs"); gc()
     }
     all_prob_mom_imgs[[ifname]] =
-      prob_mom_imgs
+      fnames
 
     print(names(all_prob_mom_imgs)[ifname])
   }
@@ -1246,9 +1257,9 @@ process_images = function(t1_pre,
     every_fname = c(every_fname, fnames)
 
     if (all_exists(fnames)){
-      prob_mom_imgs = llply(fnames,
-                            readnii,
-                            .progress = "text")
+      # prob_mom_imgs = llply(fnames,
+      #                       readnii,
+      #                       .progress = "text")
     } else {
       img = flair_tissue_probs[[ifname]]
       prob_mom_imgs = create_moment(img,
@@ -1258,9 +1269,10 @@ process_images = function(t1_pre,
       mapply(function(img, fname){
         writenii(img, filename = fname)
       }, prob_mom_imgs, fnames)
+      rm(list = "prob_mom_imgs"); gc()
     }
     all_flair_prob_mom_imgs[[ifname]] =
-      prob_mom_imgs
+      fnames
 
     print(names(all_flair_prob_mom_imgs)[ifname])
   }
@@ -1300,6 +1312,7 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, res, fnames)
+    rm(list = "res"); gc(); gc()
   }
 
   if (verbose > 0) {
