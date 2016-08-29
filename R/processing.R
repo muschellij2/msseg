@@ -12,13 +12,13 @@
 #' @param force Force tissue segmentations
 #' @return List of output filenames
 #' @export
-#' @importFrom plyr llply
+#' @importFrom plyr llply alply
 #' @importFrom extrantsr oro2ants ants2oro double_remove_neck bias_correct
 #' @importFrom extrantsr oMath filler within_visit_registration reg_flip otropos
 #' @importFrom extrantsr corr_img diff_self create_moment
 #' @importFrom ANTsR getMask "%>%"
 #' @importFrom fslr dropEmptyImageDimensions fslbet quantile_img
-#' @importFrom fslr fslsmooth nii.stub remake_img
+#' @importFrom fslr fslsmooth nii.stub remake_img datatyper
 process_images = function(t1_pre,
                           t1_post,
                           flair,

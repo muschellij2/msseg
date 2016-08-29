@@ -18,6 +18,7 @@
 #' @importFrom randomForest combine
 #' @importFrom stats predict model.matrix
 #' @importFrom ANTsR antsImageRead labelClusters
+#' @importFrom oro.nifti voxres
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
   t1_post = "3DT1GADO.nii.gz",

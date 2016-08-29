@@ -6,6 +6,7 @@
 #' @return Nifti object of same dimensions as FLAIR
 #' @export
 #' @importFrom fslr replace_dropped_dimensions
+#' @importFrom extrantsr check_ants
 unstrip_image = function(strip_image,
          outdir = "."){
 
@@ -41,7 +42,9 @@ unstrip_image = function(strip_image,
   nn = readnii(nn)
 
   gm = getMask(x, cleanup = 0)
+  rm(list = c("x")); gc();
   x = ants2oro(gm)
+  rm(list = c("gm")); gc();
   dd = dropEmptyImageDimensions(x, keep_ind = TRUE)
 
   img = replace_dropped_dimensions(img = img,
