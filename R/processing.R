@@ -428,6 +428,7 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, masked_reg_imgs, fnames)
+    rm(list = "dd_all"); gc();
   }
 
   #############################################
@@ -438,7 +439,8 @@ process_images = function(t1_pre,
                           "GoldStandard_strip.nii.gz")
     les_out_fname = les_fname
     if (all_exists(les_fname)) {
-      les_strip = readnii(les_fname)
+      # les_strip = readnii(les_fname)
+      les_strip = les_fname
     } else {
       dd = dropEmptyImageDimensions(
         mask_full,
@@ -447,6 +449,8 @@ process_images = function(t1_pre,
       les_strip = dd$other.imgs
       writenii(les_strip,
                filename = les_fname)
+      rm(list= "les_strip"); gc();
+      les_strip = les_fname
     }
   }
 
@@ -530,7 +534,8 @@ process_images = function(t1_pre,
 
 
   if (all_exists(c(fnames, tissue_fnames))) {
-    tissue_ants = readnii(fnames)
+    # tissue_ants = readnii(fnames)
+    tissue_ants = fnames
     tissue_probs = llply(tissue_fnames,
                          readnii,
                          .progress = "text")
@@ -548,7 +553,8 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, tissue_probs, tissue_fnames)
-
+    rm(list = c("tissue_ants", "rr")); gc()
+    tissue_ants = fnames
   }
 
   if (verbose > 0) {
@@ -575,7 +581,8 @@ process_images = function(t1_pre,
 
   if (all_exists(c(fnames,
                    flair_tissue_fnames))) {
-    flair_tissue_ants = readnii(fnames)
+    # flair_tissue_ants = readnii(fnames)
+    flair_tissue_ants = fnames
     flair_tissue_probs = llply(
       flair_tissue_fnames,
       readnii,
@@ -599,7 +606,8 @@ process_images = function(t1_pre,
       writenii(img, filename = fname)
     }, flair_tissue_probs,
     flair_tissue_fnames)
-
+    rm(list = c("flair_tissue_ants", "rr")); gc()
+    flair_tissue_ants = fnames
   }
 
   if (verbose > 0) {
@@ -613,7 +621,7 @@ process_images = function(t1_pre,
   every_fname = c(every_fname, fnames)
 
   if (all_exists(fnames)) {
-    post_tissue_ants = readnii(fnames)
+    # post_tissue_ants = readnii(fnames)
   } else {
     rr = robust_window(
       masked_reg_imgs$T1_Post)
@@ -625,6 +633,7 @@ process_images = function(t1_pre,
       post_tissue_ants$segmentation
     writenii(post_tissue_ants,
              filename = fnames)
+    rm(list = c("post_tissue_ants", "rr")); gc()
   }
 
   if (verbose > 0) {
@@ -690,6 +699,8 @@ process_images = function(t1_pre,
     writenii(thresh,
              filename = f90_fname
     )
+    # don't delete mas2
+    rm(list = c("vals", "thresh")); gc(); gc();
   }
 
   if (verbose > 0) {
@@ -1019,6 +1030,7 @@ process_images = function(t1_pre,
       writenii(img, filename = fname)
     }, flip_imgs, fnames)
     rm(list = "flip_imgs"); gc();
+    rm(list = "flipped"); gc(); gc();
   }
 
   rm(list = "masked_reg_imgs"); gc(); gc();
@@ -1256,7 +1268,7 @@ process_images = function(t1_pre,
     names(fnames) = stubs
     every_fname = c(every_fname, fnames)
 
-    if (all_exists(fnames)){
+    if (all_exists(fnames)) {
       # prob_mom_imgs = llply(fnames,
       #                       readnii,
       #                       .progress = "text")
@@ -1341,6 +1353,7 @@ process_images = function(t1_pre,
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, res, fnames)
+    rm(list = "res"); gc();
   }
 
   # ret_mask_fname
