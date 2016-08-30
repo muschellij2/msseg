@@ -17,7 +17,7 @@
 #' @export
 #' @importFrom randomForest combine
 #' @importFrom stats predict model.matrix
-#' @importFrom ANTsR antsImageRead labelClusters
+#' @importFrom ANTsR antsImageRead labelClusters as.array
 #' @importFrom oro.nifti voxres
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
@@ -71,7 +71,7 @@ msseg_pipeline =  function(
   }
   mask = check_nifti(L$mask)
 
-  ind = df$qFLAIR > 0.5
+  ind = which(df$qFLAIR > 0.5)
 
   p = rep(0, length = nrow(df))
   if (verbose) {
@@ -99,6 +99,7 @@ msseg_pipeline =  function(
                    newdata = df[ind,],
                    type = "prob")[, "1"]
   rm(list = "rf"); gc()
+  rm(list = "df"); gc();
   if (verbose) {
     message("Remaking Image")
   }
@@ -126,7 +127,7 @@ msseg_pipeline =  function(
                          minClusterSize = 1,
                          fullyConnected = TRUE)
     min_vox = floor(min_vol / vres)
-    tab = table(c(as.array(labs)))
+    tab = table(c(ANTsR::as.array(labs)))
     levs = names(tab[tab > min_vox])
     levs = as.numeric(levs)
     levs = levs[ levs > 0]
