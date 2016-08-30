@@ -193,7 +193,7 @@ process_images = function(t1_pre,
                filename = les_fname)
     }
   }
-
+  rm(list = "noneck"); gc(); gc();
 
   if (verbose > 0) {
     message("Getting Quick mask")
@@ -236,20 +236,22 @@ process_images = function(t1_pre,
   fnames = file.path(outdir,
                      "FLAIR_BET.nii.gz")
   if (all_exists(fnames)) {
-    flair_bet = readnii(fnames)
+    # flair_bet = readnii(fnames)
+    flair_bet = fnames
   } else {
     flair_bet = fslbet(rm_neck$FLAIR)
     writenii(flair_bet,
              filename = fnames)
   }
+  rm(list = "flair_bet"); gc(); gc();
 
   #######################################
   # Need MASS Templates
   #######################################
-  root_mass_template_dir = system.file("MASS_Templates",
-                                       package = "msseg")
-  mass_template_dir = file.path(root_mass_template_dir,
-                                "WithCerebellum")
+  # root_mass_template_dir = system.file("MASS_Templates",
+  #                                      package = "msseg")
+  # mass_template_dir = file.path(root_mass_template_dir,
+  #                               "WithCerebellum")
   # template_files = file.path(
   #   mass_template_dir,
   #   paste0("Template", 1:num_templates,
@@ -319,7 +321,9 @@ process_images = function(t1_pre,
       brain_masks[[i]] = bet_mask
       writenii(brain_masks[[i]],
                filename = run_fnames[i])
+      rm(list = "bet_mask"); gc(); gc();
     }
+    rm(list = "run_rm_neck"); gc(); gc();
   }
 
   #######################################
@@ -430,6 +434,7 @@ process_images = function(t1_pre,
     }, masked_reg_imgs, fnames)
     rm(list = "dd_all"); gc();
   }
+  rm(list = "n4_brain"); gc(); gc();
 
   #############################################
   # Dropping dimensions from lesion
@@ -449,11 +454,11 @@ process_images = function(t1_pre,
       les_strip = dd$other.imgs
       writenii(les_strip,
                filename = les_fname)
-      rm(list= "les_strip"); gc();
+      rm(list = "les_strip"); gc();
       les_strip = les_fname
     }
   }
-
+  rm(list = "rm_neck"); gc(); gc();
   if (verbose > 0) {
     message("Running Tissue Segmentation MALF on T1 Pre")
   }
@@ -490,6 +495,7 @@ process_images = function(t1_pre,
   } else {
     regs = tissue_seg_reg$regs
   }
+  rm(list = "tissue_seg_reg"); gc(); gc();
   trans = regs$fwdtransforms
   #########################################
   # Saves computation by not having to redo registrations
@@ -514,6 +520,7 @@ process_images = function(t1_pre,
       keep_regs = FALSE,
       verbose = TRUE)
   }
+  rm(list = "tissue_seg_gauss"); gc(); gc();
   if (verbose > 0) {
     message("Running Atropos Tissue Segmentation on T1 Pre")
   }
@@ -1017,6 +1024,7 @@ process_images = function(t1_pre,
       res - fres
     }, all_imgs, flipped,
     SIMPLIFY = FALSE)
+    rm(list = "flipped"); gc(); gc();
 
     ##########################
     # Mask flipped difference image
@@ -1030,7 +1038,6 @@ process_images = function(t1_pre,
       writenii(img, filename = fname)
     }, flip_imgs, fnames)
     rm(list = "flip_imgs"); gc();
-    rm(list = "flipped"); gc(); gc();
   }
 
   rm(list = "masked_reg_imgs"); gc(); gc();
@@ -1216,7 +1223,7 @@ process_images = function(t1_pre,
     names(fnames) = stubs
     every_fname = c(every_fname, fnames)
 
-    if (all_exists(fnames)){
+    if (all_exists(fnames)) {
       # prob_mom_imgs = llply(fnames,
       #                       readnii,
       #                       .progress = "text")
@@ -1236,6 +1243,7 @@ process_images = function(t1_pre,
 
     print(names(all_prob_mom_imgs)[ifname])
   }
+  rm(list = "tissue_probs"); gc(); gc();
 
 
 
@@ -1288,6 +1296,8 @@ process_images = function(t1_pre,
 
     print(names(all_flair_prob_mom_imgs)[ifname])
   }
+  rm(list = "flair_tissue_probs"); gc(); gc();
+
 
 
   ##########################################
