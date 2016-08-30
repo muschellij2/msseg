@@ -55,6 +55,7 @@ make_df = function(fnames, mask,
     }
     mm = model.matrix(~ . - 1,
                       data = df[, cn])
+    mm = as.data.frame(mm)
     if (verbose) {
       message("Making model.matrix output")
     }
@@ -65,7 +66,10 @@ make_df = function(fnames, mask,
     if (verbose) {
       message("Binding Columns")
     }
-    df = bind_cols(df, mm)
+    for (icol in colnames(mm)) {
+      df[, icol] = mm[, icol]
+    }
+    # df = bind_cols(df, mm)
 
     # L = list(mask = mask,
     #      df = df)
