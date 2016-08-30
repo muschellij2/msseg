@@ -4,7 +4,7 @@
 \alias{make_df}
 \title{Make Data.frame of images}
 \usage{
-make_df(fnames, mask, y_fname = NULL)
+make_df(fnames, mask, y_fname = NULL, verbose = TRUE)
 }
 \arguments{
 \item{fnames}{Filenames to put into data.frame}
@@ -12,6 +12,8 @@ make_df(fnames, mask, y_fname = NULL)
 \item{mask}{Mask to subset the images}
 
 \item{y_fname}{Name of gold standard}
+
+\item{verbose}{print diagnostic messages}
 }
 \value{
 List of mask and data.frame

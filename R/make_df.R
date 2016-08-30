@@ -3,14 +3,21 @@
 #' @param fnames Filenames to put into data.frame
 #' @param mask Mask to subset the images
 #' @param y_fname Name of gold standard
+#' @param verbose print diagnostic messages
 #'
 #' @return List of mask and data.frame
 #' @importFrom stats model.matrix
+#' @importFrom dplyr bind_cols
 #' @export
-make_df = function(fnames, mask, y_fname = NULL) {
+make_df = function(fnames, mask,
+                   y_fname = NULL,
+                   verbose = TRUE) {
     mask = check_nifti(mask)
 
-    dd = llply(fnames, function(x){
+    if (verbose) {
+      message("reading in data")
+    }
+    df = llply(fnames, function(x){
       img = readnii(x)
       vals = img[ mask == 1 ]
       nonfinite = !is.finite(vals)
@@ -20,8 +27,10 @@ make_df = function(fnames, mask, y_fname = NULL) {
       vals
     }, .progress = "text")
 
-
-    df = as.data.frame(dd)
+    if (verbose) {
+      message("Converting to data.frame")
+    }
+    df = as.data.frame(df)
     if (!is.null(y_fname)) {
       y = readnii(y_fname)
       df$Y = y[ mask == 1 ]
@@ -41,16 +50,22 @@ make_df = function(fnames, mask, y_fname = NULL) {
     cn = c("class",
            "gclass",
            "ants_seg")
-
+    if (verbose) {
+      message("Making model.matrix output")
+    }
     mm = model.matrix(~ . - 1,
                       data = df[, cn])
-
-    df = cbind(df, mm)
-
+    if (verbose) {
+      message("Making model.matrix output")
+    }
     df$class = NULL
     df$gclass = NULL
     df$ants_seg = NULL
 
+    if (verbose) {
+      message("Binding Columns")
+    }
+    df = bind_cols(df, mm)
 
     # L = list(mask = mask,
     #      df = df)

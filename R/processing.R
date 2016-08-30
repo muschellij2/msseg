@@ -1374,11 +1374,17 @@ process_images = function(t1_pre,
 
   # ret_mask_fname
   # les_out_fname
+  if (verbose) {
+    message("Saving List of Names")
+  }
   L = list(mask = ret_mask_fname,
            all_imgs = every_fname,
            outdir = outdir)
   if (have_gold_standard) {
     L$gold_standard = les_out_fname
+  }
+  if (verbose) {
+    message("Returning List of Names")
   }
   return(L)
 
