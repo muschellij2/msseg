@@ -791,9 +791,9 @@ process_images = function(t1_pre,
       # outfile = fnames[reg_name],
       outfile = tempfile(fileext = ".nii.gz"),
       other.files =
-        all_imgs[other.names],
+        all_imgs,
       other.outfiles =
-        fnames[other.names],
+        fnames,
       remove.warp = FALSE,
       outprefix = tempfile()
     )
