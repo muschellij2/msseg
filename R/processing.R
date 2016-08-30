@@ -1147,6 +1147,7 @@ process_images = function(t1_pre,
     every_fname = c(every_fname, fnames)
 
     if (all_exists(fnames)) {
+      # keep this
       mom_imgs = llply(fnames,
                        readnii,
                        .progress = "text")
@@ -1232,6 +1233,7 @@ process_images = function(t1_pre,
       prob_mom_imgs = create_moment(img,
                                     mask = mask,
                                     retimg = TRUE)
+      rm(list = "img"); gc();
       prob_mom_imgs = prob_mom_imgs[stubs]
       mapply(function(img, fname){
         writenii(img, filename = fname)
@@ -1285,6 +1287,7 @@ process_images = function(t1_pre,
       prob_mom_imgs = create_moment(img,
                                     mask = mask,
                                     retimg = TRUE)
+      rm(list = "img"); gc(); gc();
       prob_mom_imgs = prob_mom_imgs[stubs]
       mapply(function(img, fname){
         writenii(img, filename = fname)
@@ -1325,10 +1328,12 @@ process_images = function(t1_pre,
                 function(iname){
                   img1 = norm_imgs[[iname[1]]]
                   img2 = norm_imgs[[iname[2]]]
-                  extrantsr::corr_img(img1, img2,
+                  myres = extrantsr::corr_img(img1, img2,
                                       mask = mask,
                                       radius = rep(1,3),
                                       method = "pearson")
+                  gc(); gc();
+                  return(myres)
                 }, .progress = "text")
 
     mapply(function(img, fname){
@@ -1357,6 +1362,7 @@ process_images = function(t1_pre,
                   x = mask_img(x + adder,
                                mask)
                   r = extrantsr::diff_self(x)
+                  rm(list = "x"); gc(); gc();
                   mask_img(r, mask)
                 },
                 .progress = "text")
