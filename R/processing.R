@@ -858,8 +858,8 @@ process_images = function(t1_pre,
                   def = t1_deffile,
                   outfile = outfile,
                   template = template_brain)
-    },  all_imgs[other.names],
-    fnames[other.names])
+    },  all_imgs,
+    fnames)
   }
 
   # ################################
