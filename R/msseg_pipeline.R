@@ -12,6 +12,7 @@
 #' @param verbose print diagnostic messages
 #' @param runcc Run connected components
 #' @param min_vol Minimum volume of a lesion
+#' @param remove_files Remove predictor files from hard disk
 #' @param ... arguments passed to \code{\link{process_images}}
 #' @return Final Segmentation
 #' @export
@@ -32,6 +33,7 @@ msseg_pipeline =  function(
   verbose = TRUE,
   runcc = TRUE,
   min_vol = 0.01,
+  remove_files = FALSE,
   ...){
 
   process_images(t1_pre = t1_pre,
@@ -135,6 +137,13 @@ msseg_pipeline =  function(
     yhat = niftiarr(yhat, olabs %in% levs)
     if (!is.null(outfile)) {
       writenii(yhat, filename = outfile)
+    }
+  }
+  if (remove_files) {
+    fnames = L$fnames
+    fnames = fnames[ file.exists(fnames) ]
+    if (length(fnames) > 0) {
+      file.remove(fnames)
     }
   }
   return(yhat)

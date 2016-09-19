@@ -814,9 +814,10 @@ process_images = function(t1_pre,
     removers = list.files(path = tempdir())
     removers = grep(removers,
                     pattern = basename(outprefix),
-                    fixed = TRUE)
+                    fixed = TRUE,
+                    value = TRUE)
     if (length(removers) > 0 & cleanup) {
-      file.remove(removers)
+      file.remove(file.path(tempdir(), removers))
     }
     rm(removers); gc(); gc();
     rm(t1_reg); gc(); gc()
