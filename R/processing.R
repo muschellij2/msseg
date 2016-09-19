@@ -10,6 +10,7 @@
 #' @param num_templates Number of templates used in MASS
 #' @param verbose print diagnostic messages
 #' @param force Force tissue segmentations
+#' @param cleanup delete temporary files
 #' @return List of output filenames
 #' @export
 #' @importFrom plyr llply alply
@@ -28,7 +29,8 @@ process_images = function(t1_pre,
                           outdir = ".",
                           num_templates = 15,
                           verbose = TRUE,
-                          force = TRUE){
+                          force = TRUE,
+                          cleanup = TRUE){
   verbose = TRUE
 
   niis = list(FLAIR = flair,
@@ -521,6 +523,13 @@ process_images = function(t1_pre,
       verbose = TRUE)
   }
   rm(list = "tissue_seg_gauss"); gc(); gc();
+
+  regs = unlist(regs)
+  regs = regs[ file.exists(regs)]
+  if (length(regs) > 0 & cleanup) {
+    file.remove(regs)
+  }
+
   if (verbose > 0) {
     message("Running Atropos Tissue Segmentation on T1 Pre")
   }
@@ -783,20 +792,33 @@ process_images = function(t1_pre,
 
   if (!all_exists(fnames)) {
     # t1 = masked_reg_imgs[[reg_name]]
+    tfile = tempfile(fileext = ".nii.gz")
+    outprefix = tempfile(fileext = "_")
     t1_reg = registration(
       filename = t1,
       template.file = template_brain,
       typeofTransform = "SyN",
       interpolator = "LanczosWindowedSinc",
       # outfile = fnames[reg_name],
-      outfile = tempfile(fileext = ".nii.gz"),
+      outfile = tfile,
       other.files =
         all_imgs,
       other.outfiles =
         fnames,
       remove.warp = FALSE,
-      outprefix = tempfile()
+      outprefix = outprefix
     )
+    if (file.exists(tfile) & cleanup) {
+      file.remove(tfile)
+    }
+    removers = list.files(path = tempdir())
+    removers = grep(removers,
+                    pattern = basename(outprefix),
+                    fixed = TRUE)
+    if (length(removers) > 0 & cleanup) {
+      file.remove(removers)
+    }
+    rm(removers); gc(); gc();
     rm(t1_reg); gc(); gc()
   }
 
@@ -934,17 +956,21 @@ process_images = function(t1_pre,
     ".nii.gz")
   if (!all_exists(fnames)) {
     t1 = masked_reg_imgs[[reg_name]]
+    tfile = tempfile(fileext =
+               ".nii.gz")
     d = dramms_with_ravens(
       source = template_brain,
       target = t1,
       outfile = NULL,
-      outdef = tempfile(fileext =
-                          ".nii.gz"),
+      outdef = tfile,
       label = template_mask,
       labs = 1,
       ravens_prefix = template_ravens_pre,
       retimg = FALSE
     )
+    if (file.exists(tfile) & cleanup) {
+      file.remove(tfile)
+    }
   }
 
   t1_inv_deffile = paste0(
@@ -965,7 +991,9 @@ process_images = function(t1_pre,
       outdef = t1_inv_deffile
     )
   }
-
+  # if (cleanup) {
+  #   file.remove(t1_inv_deffile)
+  # }
   # eve_norm_imgs = llply(
   #     fnames,
   #     readnii,
@@ -994,6 +1022,7 @@ process_images = function(t1_pre,
     other.names = setdiff(other.names,
                           reg_name)
     t1 = masked_reg_imgs[[reg_name]]
+    tfile = tempfile(fileext = ".nii.gz")
     t1_freg = reg_flip(
       t1 = t1,
       register = TRUE,
@@ -1002,7 +1031,7 @@ process_images = function(t1_pre,
       typeofTransform = "Affine",
       interpolator = "LanczosWindowedSinc",
       # t1.outfile = fnames[reg_name],
-      t1.outfile = tempfile(fileext = ".nii.gz"),
+      t1.outfile = tfile,
       other.files =
         all_imgs,
       other.outfiles =
@@ -1011,6 +1040,9 @@ process_images = function(t1_pre,
       b = "y",
       c = "z"
     )
+    if (file.exists(tfile) & cleanup) {
+      file.remove(tfile)
+    }
     rm(t1_freg); gc(); gc()
     flipped = llply(fnames,
                     readnii,
