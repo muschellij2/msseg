@@ -15,7 +15,7 @@ Imports:
     oro.nifti,
     animation,
     ROCR,
-    extrantsr (>= 1.3.0),
+    extrantsr (>= 2.0),
     matrixStats,
     plyr,
     ANTsR,
@@ -24,3 +24,5 @@ Imports:
     dplyr
 LazyData: TRUE
 RoxygenNote: 5.0.1.9000
+Remotes: muschellij2/extrantsr, muschellij2/fslr,
+    muschellij2/neurobase, muschellij2/drammsr, stnava/ANTsR
