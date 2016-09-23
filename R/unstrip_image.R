@@ -5,7 +5,7 @@
 #' \code{FLAIR_noneck.nii.gz}
 #' @return Nifti object of same dimensions as FLAIR
 #' @export
-#' @importFrom fslr replace_dropped_dimensions
+#' @importFrom neurobase replace_dropped_dimensions
 #' @importFrom extrantsr check_ants
 unstrip_image = function(strip_image,
          outdir = "."){

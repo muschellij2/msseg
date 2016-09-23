@@ -17,7 +17,7 @@
 #' @return Object of class nifti
 #' @export
 #' @importFrom extrantsr malf
-#' @importFrom fslr check_outfile
+#' @importFrom neurobase check_outfile
 #' @importFrom extrantsr reapply_malf
 reapply_malf_tissue_seg = function(t1,
                                    regs,

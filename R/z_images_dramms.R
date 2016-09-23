@@ -12,7 +12,7 @@
 #'
 #' @return NULL
 #' @export
-#' @importFrom fslr checkimg readnii finite_img robust_window writenii
+#' @importFrom neurobase checkimg readnii finite_img robust_window writenii
 #' @import drammsr
 z_images_dramms = function(t1_inv_deffile,
                            orig_t1_pre,

@@ -11,7 +11,7 @@
 #' trimmed sd
 #' @return Object of class \code{nifti}
 #' @export
-#' @importFrom fslr niftiarr check_nifti check_mask_fail mask_img
+#' @importFrom neurobase niftiarr check_nifti check_mask_fail mask_img
 #' @examples
 #' nim = oro.nifti::nifti(img = array(rnorm(1000), dim = c(10, 10, 10)))
 #' mask = nim > 0

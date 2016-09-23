@@ -18,8 +18,8 @@
 #' @importFrom extrantsr oMath filler within_visit_registration reg_flip otropos
 #' @importFrom extrantsr corr_img diff_self create_moment
 #' @importFrom ANTsR getMask "%>%"
-#' @importFrom fslr dropEmptyImageDimensions fslbet quantile_img
-#' @importFrom fslr fslsmooth nii.stub remake_img datatyper
+#' @importFrom neurobase dropEmptyImageDimensions quantile_img nii.stub remake_img datatyper
+#' @importFrom fslr fslbet fslsmooth
 process_images = function(t1_pre,
                           t1_post,
                           flair,
