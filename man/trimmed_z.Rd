@@ -33,4 +33,3 @@ nim = oro.nifti::nifti(img = array(rnorm(1000), dim = c(10, 10, 10)))
 mask = nim > 0
 trimmed_z(nim, mask)
 }
-

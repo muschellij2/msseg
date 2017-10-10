@@ -18,4 +18,3 @@ Nifti object of same dimensions as FLAIR
 \description{
 Takes in a _strip segmentation and makes it same size as FLAIR
 }
-

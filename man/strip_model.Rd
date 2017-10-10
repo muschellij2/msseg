@@ -25,4 +25,3 @@ lm.D9 <- lm(weight ~ group)
 object.size(lm.D9)
 object.size(strip_model(lm.D9))
 }
-

@@ -32,4 +32,3 @@ Object of class nifti
 \description{
 Uses MALF for tissue-class segmentation
 }
-

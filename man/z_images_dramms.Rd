@@ -29,4 +29,3 @@ z_images_dramms(t1_inv_deffile, orig_t1_pre, t1_pre, t1_post, flair, t2, pd,
 \description{
 Normalizes to the template
 }
-

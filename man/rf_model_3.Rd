@@ -12,4 +12,3 @@ rf_model_3
 Random forest model
 }
 \keyword{datasets}
-

@@ -38,4 +38,3 @@ cx = rowScale(x)
 all(abs(rowMeans(cx)) < 1e-8)
 all(abs(matrixStats::rowSds(cx) - 1) < 1e-8)
 }
-

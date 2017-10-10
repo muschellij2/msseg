@@ -24,4 +24,3 @@ Name of PDF output file
 \description{
 Converts PNGs to PDF
 }
-

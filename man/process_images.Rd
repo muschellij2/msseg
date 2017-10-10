@@ -37,4 +37,3 @@ List of output filenames
 \description{
 Processing script for MSSeg Challenge
 }
-

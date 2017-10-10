@@ -45,4 +45,3 @@ Final Segmentation
 \description{
 Full Pipeline for MSSeg Challenge
 }
-

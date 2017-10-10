@@ -17,4 +17,3 @@ a matrix of 2 columns, with the first column being the dice, the second - cutoff
 Get the Dice coefficient and the cutoff for that max Dice
 from a prediction object
 }
-

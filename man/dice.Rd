@@ -16,4 +16,3 @@ Object of class \code{\link{performance}}
 \description{
 Calculate Dice Coefficient/Similarity Index from a prediction object
 }
-

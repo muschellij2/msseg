@@ -17,9 +17,9 @@
 #' @importFrom extrantsr oro2ants ants2oro double_remove_neck bias_correct
 #' @importFrom extrantsr oMath filler within_visit_registration reg_flip otropos
 #' @importFrom extrantsr corr_img diff_self create_moment
-#' @importFrom ANTsR getMask "%>%"
+#' @importFrom ANTsRCore getMask "%>%"
 #' @importFrom neurobase dropEmptyImageDimensions quantile_img nii.stub remake_img datatyper
-#' @importFrom fslr fslbet fslsmooth
+#' @importFrom fslr fslbet fslsmooth fsl_smooth
 process_images = function(t1_pre,
                           t1_post,
                           flair,
@@ -1106,10 +1106,17 @@ process_images = function(t1_pre,
       #                  readnii,
       #                  .progress = "text")
     } else {
+      # New 2017May03
+      smoothed_mask = fslr::fsl_smooth(
+        file = mask,
+        sigma = sigma,
+        smooth_mask = FALSE)
       sig_imgs = llply(all_imgs,
                        fslsmooth,
                        sigma = sigma,
                        mask = mask,
+                       smoothed_mask = smoothed_mask,
+                       smooth_mask = TRUE,
                        .progress = "text")
 
       mapply(function(img, fname){

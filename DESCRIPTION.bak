@@ -24,12 +24,5 @@ Imports:
     dplyr
 LazyData: TRUE
 RoxygenNote: 6.0.1.9000
-Suggests: 
-    covr
-Remotes: muschellij2/extrantsr,
-    muschellij2/drammsr,
-    neuroconductor/oro.nifti@c25f6bcb1200506a3e39127f550bcca7766b0107,
-    neuroconductor/ANTsR@9777f4df2cdf2c7f87473553be7bd3cc4175bd50,
-    neuroconductor/neurobase@c668aabafa4a51381b7cbc56ff23101abd19e337,
-    neuroconductor/fslr@226e64eb9d2de273da6070b1257854d7b709064d
-biocViews: 
+Remotes: muschellij2/extrantsr, muschellij2/fslr,
+    muschellij2/neurobase, muschellij2/drammsr, stnava/ANTsR

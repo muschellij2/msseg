@@ -18,7 +18,7 @@
 #' @export
 #' @importFrom randomForest combine
 #' @importFrom stats predict model.matrix
-#' @importFrom ANTsR antsImageRead labelClusters as.array
+#' @importFrom ANTsRCore antsImageRead labelClusters
 #' @importFrom oro.nifti voxres
 msseg_pipeline =  function(
   t1_pre = "3DT1.nii.gz",
@@ -129,7 +129,7 @@ msseg_pipeline =  function(
                          minClusterSize = 1,
                          fullyConnected = TRUE)
     min_vox = floor(min_vol / vres)
-    tab = table(c(ANTsR::as.array(labs)))
+    tab = table(c(as.array(labs)))
     levs = names(tab[tab > min_vox])
     levs = as.numeric(levs)
     levs = levs[ levs > 0]

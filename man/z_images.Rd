@@ -27,4 +27,3 @@ z_images(orig_t1_pre, t1_pre, t1_post, flair, t2, pd, outdir = ".",
 \description{
 Normalizes to the template
 }
-

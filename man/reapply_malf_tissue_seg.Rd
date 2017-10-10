@@ -36,4 +36,3 @@ Object of class nifti
 Uses MALF for tissue-class segmentation, but with already-done
 registrations
 }
-

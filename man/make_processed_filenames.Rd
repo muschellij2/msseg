@@ -20,4 +20,3 @@ data.frame of values
 \description{
 Get filename output from processing
 }
-

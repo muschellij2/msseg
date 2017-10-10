@@ -22,4 +22,3 @@ Calculates both trimmed mean and standard deviation from a vector
 x = rnorm(100)
 trim_mean_sd(x)
 }
-

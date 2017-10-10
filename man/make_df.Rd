@@ -21,4 +21,3 @@ List of mask and data.frame
 \description{
 Take the filenames and make an analytic data.frame
 }
-

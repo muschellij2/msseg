@@ -15,4 +15,3 @@ Logical length of \code{...}
 \description{
 Wrapper for all files existing
 }
-

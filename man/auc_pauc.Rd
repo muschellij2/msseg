@@ -19,4 +19,3 @@ a matrix of 2 columns, with the first column being the AUC, the second - pAUC
 Get the area under the curve (AUC) and the partial AUC (pAUC)
 for a prediction object
 }
-
