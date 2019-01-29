@@ -11,7 +11,7 @@
 #' trimmed sd
 #' @return Object of class \code{nifti}
 #' @export
-#' @importFrom neurobase niftiarr check_nifti check_mask_fail mask_img
+#' @importFrom neurobase niftiarr check_nifti mask_vals mask_img
 #' @examples
 #' nim = oro.nifti::nifti(img = array(rnorm(1000), dim = c(10, 10, 10)))
 #' mask = nim > 0
@@ -22,11 +22,10 @@ trimmed_z <- function(img, mask = NULL,
                   scale = TRUE){
   img = check_nifti(img)
   if (is.null(mask)) {
-    mask = niftiarr(img, 1)
+    mask = array(1, dim = dim(img))
   }
-  check_mask_fail(mask, allow.NA = FALSE)
+  x = mask_vals(img, mask)
 
-  x = img[ mask == 1 ]
   tvals = trim_mean_sd(x, trim = trim)
   mn = tvals['mean']
   s = tvals['sd']

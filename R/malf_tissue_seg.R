@@ -15,14 +15,15 @@
 #' @export
 #' @importFrom extrantsr malf
 #' @importFrom neurobase check_outfile
-malf_tissue_seg = function(t1,
-                           outfile = NULL,
-                           num_templates = 15,
-                           interpolator = "NearestNeighbor",
-                           typeofTransform = "SyN",
-                           func = "mode",
-                           keep_regs = TRUE,
-                           verbose = TRUE){
+malf_tissue_seg = function(
+  t1,
+  outfile = NULL,
+  num_templates = 15,
+  interpolator = "NearestNeighbor",
+  typeofTransform = "SyN",
+  func = "mode",
+  keep_regs = TRUE,
+  verbose = TRUE){
 
   root_mass_template_dir = system.file("MASS_Templates",
                                        package = "msseg")
@@ -66,7 +67,7 @@ malf_tissue_seg = function(t1,
                filename = fnames)
     } else {
       writenii(tissue_seg,
-             filename = fnames)
+               filename = fnames)
     }
   }
   return(tissue_seg)

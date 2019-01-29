@@ -14,30 +14,34 @@
 #' @return List of output filenames
 #' @export
 #' @importFrom plyr llply alply
-#' @importFrom extrantsr oro2ants ants2oro double_remove_neck bias_correct
-#' @importFrom extrantsr oMath filler within_visit_registration reg_flip otropos
+#' @importFrom extrantsr oro2ants ants2oro double_remove_neck
+#' @importFrom extrantsr bias_correct
+#' @importFrom extrantsr oMath filler within_visit_registration
+#' @importFrom extrantsr reg_flip otropos oMask
 #' @importFrom extrantsr corr_img diff_self create_moment
 #' @importFrom ANTsRCore getMask "%>%"
-#' @importFrom neurobase dropEmptyImageDimensions quantile_img nii.stub remake_img datatyper
+#' @importFrom neurobase dropEmptyImageDimensions quantile_img
+#' @importFrom neurobase nii.stub remake_img datatyper
 #' @importFrom fslr fslbet fslsmooth fsl_smooth
-process_images = function(t1_pre,
-                          t1_post,
-                          flair,
-                          t2,
-                          pd,
-                          gold_standard = NULL,
-                          outdir = ".",
-                          num_templates = 15,
-                          verbose = TRUE,
-                          force = TRUE,
-                          cleanup = TRUE){
-  verbose = TRUE
+process_images = function(
+  t1_pre,
+  t1_post,
+  flair,
+  t2,
+  pd,
+  gold_standard = NULL,
+  outdir = ".",
+  num_templates = 15,
+  verbose = TRUE,
+  force = TRUE,
+  cleanup = TRUE){
 
-  niis = list(FLAIR = flair,
-              T1_Pre = t1_pre,
-              T1_Post = t1_post,
-              T2 = t2,
-              PD = pd)
+  niis = list(
+    FLAIR = flair,
+    T1_Pre = t1_pre,
+    T1_Post = t1_post,
+    T2 = t2,
+    PD = pd)
 
   # REMOVE NULL
   nulls = sapply(niis, is.null)
@@ -76,11 +80,12 @@ process_images = function(t1_pre,
     n4 = llply(fnames, readnii,
                .progress = "text")
   } else {
-    n4 = llply(imgs,
-               bias_correct,
-               correction = "N4",
-               verbose = verbose,
-               .progress = "text")
+    n4 = llply(
+      imgs,
+      bias_correct,
+      correction = "N4",
+      verbose = verbose,
+      .progress = "text")
 
     #################################
     # Swap image for remove_neck.
@@ -102,15 +107,17 @@ process_images = function(t1_pre,
   ####################################################
   # Making fname stubs
   ####################################################
-  fname_stubs = file.path(outdir,
-                          names(n4))
+  fname_stubs = file.path(
+    outdir,
+    names(n4))
   names(fname_stubs) = names(n4)
 
   ####################################################
   # Removing Neck
   ####################################################
-  fnames = paste0(fname_stubs,
-                  "_noneck.nii.gz")
+  fnames = paste0(
+    fname_stubs,
+    "_noneck.nii.gz")
   names(fnames) = names(n4)
 
   if (all_exists(fnames)) {
@@ -120,17 +127,20 @@ process_images = function(t1_pre,
   } else {
 
 
-    mni.template.file = system.file("MNI152_T1_1mm_brain.nii.gz",
-                                    package = "msseg")
-    mni.template.mask = system.file("MNI152_T1_1mm_brain_mask.nii.gz",
-                                    package = "msseg")
+    mni.template.file = system.file(
+      "MNI152_T1_1mm_brain.nii.gz",
+      package = "msseg")
+    mni.template.mask = system.file(
+      "MNI152_T1_1mm_brain_mask.nii.gz",
+      package = "msseg")
 
 
-    noneck = llply(n4,
-                   double_remove_neck,
-                   template.file = mni.template.file,
-                   template.mask = mni.template.mask,
-                   .progress = "text")
+    noneck = llply(
+      n4,
+      double_remove_neck,
+      template.file = mni.template.file,
+      template.mask = mni.template.mask,
+      .progress = "text")
     mapply(function(img, fname){
       writenii(img, filename = fname)
     }, noneck, fnames)
@@ -142,32 +152,37 @@ process_images = function(t1_pre,
   ####################################################
   # Dropping empty dimensions
   ####################################################
-  fnames = paste0(fname_stubs,
-                  "_reduced.nii.gz")
+  fnames = paste0(
+    fname_stubs,
+    "_reduced.nii.gz")
   names(fnames) = names(n4)
 
   if (all_exists(fnames)) {
-    rm_neck = llply(fnames,
-                    readnii,
-                    .progress = "text")
+    rm_neck = llply(
+      fnames,
+      readnii,
+      .progress = "text")
   } else {
-    drops = llply(noneck,
-                  function(nn){
-                    x = oro2ants(nn)
-                    gm = getMask(x, cleanup = 0)
-                    x = ants2oro(gm)
-                    dd = dropEmptyImageDimensions(
-                      x, keep_ind = TRUE,
-                      other.imgs = nn)
-                    dd$outimg = dd$other.imgs
-                    dd$other.imgs = NULL
-                    dd
-                  },
-                  .progress = "text")
-    rm_neck = llply(drops,
-                    function(x){
-                      x$outimg
-                    })
+    drops = llply(
+      noneck,
+      function(nn){
+        # x = oro2ants(nn)
+        # gm = getMask(x, cleanup = 0)
+        # x = ants2oro(gm)
+        x = oMask(nn, cleanup = 0)
+        dd = dropEmptyImageDimensions(
+          x, keep_ind = TRUE,
+          other.imgs = nn)
+        dd$outimg = dd$other.imgs
+        dd$other.imgs = NULL
+        dd
+      },
+      .progress = "text")
+    rm_neck = llply(
+      drops,
+      function(x){
+        x$outimg
+      })
 
     mapply(function(img, fname){
       writenii(img, filename = fname)
@@ -178,16 +193,17 @@ process_images = function(t1_pre,
   # Removing dims if gold standard exists
   #################################
   if (have_gold_standard) {
-    les_fname = file.path(outdir,
-                          "GoldStandard_reduced.nii.gz")
+    les_fname = file.path(
+      outdir,
+      "GoldStandard_reduced.nii.gz")
     if (all_exists(les_fname)) {
       les_rm_neck = readnii(les_fname)
     } else {
       nn = noneck$FLAIR
-      x = oro2ants(nn)
-      gm = getMask(x, cleanup = 0)
-      x = ants2oro(gm)
-
+      # x = oro2ants(nn)
+      # gm = getMask(x, cleanup = 0)
+      # x = ants2oro(gm)
+      x = oMask(nn, cleanup = 0)
       dd = dropEmptyImageDimensions(
         x, other.imgs = les)
       les_rm_neck = dd$other.imgs
@@ -204,14 +220,16 @@ process_images = function(t1_pre,
   # Just see how a quick mask can be created
   # with getMask and FLAIR
   #######################################
-  fnames = file.path(outdir,
-                     "FLAIR_reduced_quickmask.nii.gz")
+  fnames = file.path(
+    outdir,
+    "FLAIR_reduced_quickmask.nii.gz")
   if (all_exists(fnames)){
     quick_flair_mask = readnii(fnames)
   } else {
-    quick_flair_mask = oro2ants(rm_neck$FLAIR)
-    quick_flair_mask = getMask(quick_flair_mask)
-    quick_flair_mask = ants2oro(quick_flair_mask)
+    # quick_flair_mask = oro2ants(rm_neck$FLAIR)
+    # quick_flair_mask = getMask(quick_flair_mask)
+    # quick_flair_mask = ants2oro(quick_flair_mask)
+    quick_flair_mask = oMask(rm_neck$FLAIR)
     writenii(quick_flair_mask,
              filename = fnames)
   }
@@ -219,14 +237,21 @@ process_images = function(t1_pre,
   #################################
   # Filling
   #################################
-  fnames = file.path(outdir,
-                     "FLAIR_reduced_quickmask_filled.nii.gz")
+  fnames = file.path(
+    outdir,
+    "FLAIR_reduced_quickmask_filled.nii.gz")
 
   if (all_exists(fnames)) {
     filled_quick_flair_mask = readnii(fnames)
   } else {
-    filled_quick_flair_mask = quick_flair_mask %>%
-      oMath("MD", 5) %>% oMath("ME", 5)
+    # filled_quick_flair_mask = quick_flair_mask %>%
+    #   oMath("MD", 5) %>% oMath("ME", 5)
+    filled_quick_flair_mask = filler(
+      quick_flair_mask,
+      fill_size = 5,
+      verbose = verbose,
+      dilate = TRUE,
+      erode = TRUE)
     writenii(filled_quick_flair_mask,
              filename = fnames)
   }
@@ -235,8 +260,9 @@ process_images = function(t1_pre,
   #################################
   # Running BET
   #################################
-  fnames = file.path(outdir,
-                     "FLAIR_BET.nii.gz")
+  fnames = file.path(
+    outdir,
+    "FLAIR_BET.nii.gz")
   if (all_exists(fnames)) {
     # flair_bet = readnii(fnames)
     flair_bet = fnames
@@ -316,7 +342,7 @@ process_images = function(t1_pre,
                          length = length(run_fnames))
     names(brain_masks) = names(run_fnames)
 
-    for (i in seq_along(run_fnames)){
+    for (i in seq_along(run_fnames)) {
       # brain_masks = llply(run_rm_neck,
       bet_mask = fslbet(run_rm_neck[[i]]) > 0
       bet_mask = filler(bet_mask, fill_size = 2)
@@ -958,7 +984,7 @@ process_images = function(t1_pre,
   if (!all_exists(fnames)) {
     t1 = masked_reg_imgs[[reg_name]]
     tfile = tempfile(fileext =
-               ".nii.gz")
+                       ".nii.gz")
     d = dramms_with_ravens(
       source = template_brain,
       target = t1,
@@ -1369,9 +1395,9 @@ process_images = function(t1_pre,
                   img1 = norm_imgs[[iname[1]]]
                   img2 = norm_imgs[[iname[2]]]
                   myres = extrantsr::corr_img(img1, img2,
-                                      mask = mask,
-                                      radius = rep(1,3),
-                                      method = "pearson")
+                                              mask = mask,
+                                              radius = rep(1,3),
+                                              method = "pearson")
                   gc(); gc();
                   return(myres)
                 }, .progress = "text")
